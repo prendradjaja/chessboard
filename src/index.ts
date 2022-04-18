@@ -1,6 +1,16 @@
 // Migration notes:
 // - Chessboard(...) -> new Chessboard(...)
 // - first argument of constructor/function: 'someId' -> '#someId'
+// - move() param type
+
+
+// set position -- with or without animation
+// get position
+
+// drag handler
+
+import { operaGame } from "./opera-game";
+import { startingPosition } from "./starting-position";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
@@ -9,19 +19,32 @@ const $$ = document.querySelectorAll.bind(document);
 
 const BOARD_SIZE = 8; // height & width in squares -- duplicated in styles.css
 
-type Position = PlacedPiece[]; // TODO name?
+// "row, col" coordinates, zero-indexed
+// TODO change coordinate system? it's maybe confusing that y-axis is flipped, etc
+type Coordinates = [number, number];
+
+export type Move = { start: Coordinates, end: Coordinates };
+
+export type Position = PlacedPiece[]; // TODO name?
 
 interface PlacedPiece {
   type: 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
   color: 'w' | 'b';
-  coordinates: [number, number];
+  coordinates: Coordinates;
 }
 
 function main() {
-  new Chessboard('#my-board');
+  const board = new Chessboard('#my-board');
+
+  // for (let move of operaGame) {
+  for (let move of operaGame.slice(0, 22)) {
+    board.move(move);
+  }
 }
 
 class Chessboard {
+  private position: Position = JSON.parse(JSON.stringify(startingPosition));
+
   private root: HTMLElement;
   private mainLayer!: HTMLElement;
   private coordinatesLayer!: HTMLElement;
@@ -39,10 +62,25 @@ class Chessboard {
     this.squares = {};
     this.renderBoard();
 
-    this.renderPosition([
-      { type: 'k', color: 'w', coordinates: [0, 0] },
-      { type: 'n', color: 'b', coordinates: [2, 1] },
-    ]);
+    this.renderPosition(startingPosition);
+  }
+
+  public move(move: Move): void {
+    // TODO Implement castling? e.p. and promotion require a bit more... do I
+    // need to do all this to make Sovereign Chess, anyway?
+    const piece = popBy(
+      this.position,
+      (piece: PlacedPiece) => piece.coordinates[0] === move.start[0] && piece.coordinates[1] === move.start[1]
+    );
+    discardBy(
+      this.position,
+      (piece: PlacedPiece) => piece.coordinates[0] === move.end[0] && piece.coordinates[1] === move.end[1]
+    );
+    this.position.push({
+      ...piece,
+      coordinates: move.end,
+    });
+    this.renderPosition(this.position);
   }
 
   private renderBoard(): void {
@@ -94,9 +132,30 @@ class Chessboard {
   }
 }
 
-// set position -- with or without animation
-// get position
+/**
+ * Find the first element of `arr` that matches `predicate`. Remove and
+ * return it.
+ *
+ * If none match, throw an Error.
+ */
+function popBy<T>(arr: T[], predicate: (T) => boolean): T {
+  const index = arr.findIndex(predicate);
+  if (index === -1) {
+    throw new Error("Element not found");
+  }
+  const [item] = arr.splice(index, 1);
+  return item;
+}
 
-// drag handler
+/**
+ * Remove the first element of `arr` that matches `predicate` (if any exists).
+ */
+function discardBy<T>(arr: T[], predicate: (T) => boolean): void {
+  const index = arr.findIndex(predicate);
+  if (index === -1) {
+    return;
+  }
+  arr.splice(index, 1);
+}
 
 main();
