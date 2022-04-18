@@ -36,8 +36,7 @@ interface PlacedPiece {
 function main() {
   const board = new Chessboard('#my-board');
 
-  // for (let move of operaGame) {
-  for (let move of operaGame.slice(0, 22)) {
+  for (let move of operaGame) {
     board.move(move);
   }
 }
@@ -66,8 +65,13 @@ class Chessboard {
   }
 
   public move(move: Move): void {
-    // TODO Implement castling? e.p. and promotion require a bit more... do I
-    // need to do all this to make Sovereign Chess, anyway?
+    // TODO e.p. and promotion are unimplemented, but require a bit
+    // more work/reworking than castling... do I need to do all this to make
+    // Sovereign Chess, anyway?
+
+    const isCastling = this.isCastling(move);
+
+    // TODO DRY this predicate -- also used in isCastling
     const piece = popBy(
       this.position,
       (piece: PlacedPiece) => piece.coordinates[0] === move.start[0] && piece.coordinates[1] === move.start[1]
@@ -80,6 +84,26 @@ class Chessboard {
       ...piece,
       coordinates: move.end,
     });
+
+    if (isCastling) {
+      let startRow = move.start[0];
+      let endRow = startRow;
+      let startCol: number, endCol: number;
+      if (move.end[1] === 2) {
+        startCol = 0;
+        endCol = 3;
+      } else if (move.end[1] === 6) {
+        startCol = 7;
+        endCol = 5;
+      } else {
+        // TODO ts-essentials UnreachableCaseError
+        console.error('Unreachable case');
+        return;
+      }
+      this.move({ start: [startRow, startCol], end: [endRow, endCol] });
+      return;
+    }
+
     this.renderPosition(this.position);
   }
 
@@ -129,6 +153,17 @@ class Chessboard {
 
   private getSquareElement(r: number, c: number): HTMLElement {
     return this.squares[`${r}-${c}`]!;
+  }
+
+  private isCastling(move: Move) {
+    const piece = this.position.find(
+      (piece: PlacedPiece) => piece.coordinates[0] === move.start[0] && piece.coordinates[1] === move.start[1]
+    )!;
+    return (
+      piece.type === 'k' &&
+      move.start[1] === 4 &&
+      (move.end[1] === 2 || move.end[1] === 6)
+    );
   }
 }
 
