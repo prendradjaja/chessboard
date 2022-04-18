@@ -34,7 +34,6 @@ class Chessboard {
     this.mainLayer.classList.add('main-layer');
 
     //   <div class="square" />
-    // [</div.main-layer>]
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
         const square = document.createElement('div');
@@ -43,6 +42,7 @@ class Chessboard {
         square.classList.add('square', squareColor);
       }
     }
+    // </div.main-layer>
 
     // <div class="coordinates-layer" />
     this.coordinatesLayer = document.createElement('div');
