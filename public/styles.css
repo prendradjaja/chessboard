@@ -1,5 +1,5 @@
 :root {
-  --cell-size: 50px;
+  --cell-size: 100px;
 }
 
 .main-layer {
@@ -10,6 +10,10 @@
 .square {
   /* border: 1px solid black; */
   height: var(--cell-size);
+}
+
+.square img {
+  width: 100%;
 }
 
 .square.dark {
