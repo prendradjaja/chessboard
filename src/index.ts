@@ -50,6 +50,8 @@ class Chessboard {
 
   private squares: Partial<Record<string, HTMLElement>>; // What type should I use?
 
+  private selectedSquare: Coordinates | undefined;
+
   // private piecesLayer!: HTMLElement;
 
   constructor(selector: string) {
@@ -112,6 +114,11 @@ class Chessboard {
     // this.piecesLayer = document.createElement('div');
     // this.root.appendChild(this.piecesLayer);
 
+    // <div class="coordinates-layer" />
+    this.coordinatesLayer = document.createElement('div');
+    this.root.appendChild(this.coordinatesLayer);
+    this.coordinatesLayer.classList.add('coordinates-layer');
+
     // <div class="main-layer">
     this.mainLayer = document.createElement('div');
     this.root.appendChild(this.mainLayer);
@@ -125,23 +132,29 @@ class Chessboard {
         const squareColor = (r + c) % 2 === 0 ? 'light' : 'dark';
         square.classList.add('square', squareColor);
         this.squares[`${r}-${c}`] = square;
+        square.addEventListener('click', () => this.handleClick([r, c]));
       }
     }
     // </div.main-layer>
-
-    // <div class="coordinates-layer" />
-    this.coordinatesLayer = document.createElement('div');
-    this.root.appendChild(this.coordinatesLayer);
-    this.coordinatesLayer.classList.add('coordinates-layer');
   }
 
   private renderPosition(position: Position): void {
     this.clearBoard();
     for (let piece of position) {
-      const squareEl = this.getSquareElement(piece.coordinates[0], piece.coordinates[1]);
+      const squareEl = this.getSquareElement(piece.coordinates);
       const pieceEl = document.createElement('img');
       squareEl.appendChild(pieceEl);
       pieceEl.src = `./images/pieces/${piece.color}${piece.type}.svg`;
+    }
+  }
+
+  private updateSelectedSquare(square: Coordinates | undefined): void {
+    if (this.selectedSquare) {
+      this.getSquareElement(this.selectedSquare).classList.remove('selected');
+    }
+    this.selectedSquare = square;
+    if (square) {
+      this.getSquareElement(square).classList.add('selected');
     }
   }
 
@@ -151,7 +164,21 @@ class Chessboard {
     }
   }
 
-  private getSquareElement(r: number, c: number): HTMLElement {
+  private handleClick(square: Coordinates): void {
+    if (!this.selectedSquare) {
+      // Initiate a move
+      this.updateSelectedSquare(square);
+    } else {
+      // Make a move
+      const start = this.selectedSquare;
+      const end = square;
+      this.updateSelectedSquare(undefined);
+      this.move({ start, end });
+    }
+  }
+
+  private getSquareElement(coordinates: Coordinates): HTMLElement {
+    const [r, c] = coordinates;
     return this.squares[`${r}-${c}`]!;
   }
 

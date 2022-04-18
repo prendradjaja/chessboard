@@ -10,6 +10,7 @@
 .square {
   /* border: 1px solid black; */
   height: var(--cell-size);
+  cursor: pointer;
 }
 
 .square img {
@@ -22,4 +23,8 @@
 
 .square.light {
   background: #eee;
+}
+
+.square.selected {
+  background: hsla(220, 80%, 70%);
 }
