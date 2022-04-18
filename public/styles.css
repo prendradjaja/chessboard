@@ -1,0 +1,21 @@
+:root {
+  --cell-size: 50px;
+}
+
+.main-layer {
+  display: grid;
+  grid-template-columns: var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size);
+}
+
+.square {
+  /* border: 1px solid black; */
+  height: var(--cell-size);
+}
+
+.square.dark {
+  background: #ccc;
+}
+
+.square.light {
+  background: #eee;
+}
