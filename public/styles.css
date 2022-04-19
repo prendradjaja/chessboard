@@ -2,6 +2,10 @@
   --cell-size: 100px;
 }
 
+.chessboard {
+  user-select: none;
+}
+
 .main-layer {
   display: grid;
   grid-template-columns: var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size)  var(--cell-size);

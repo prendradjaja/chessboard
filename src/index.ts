@@ -106,6 +106,8 @@ class Chessboard {
   }
 
   private renderBoard(): void {
+    this.root.classList.add('chessboard');
+
     // // <div class="pieces-layer">
     // this.piecesLayer = document.createElement('div');
     // this.root.appendChild(this.piecesLayer);
