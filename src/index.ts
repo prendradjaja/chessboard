@@ -50,12 +50,8 @@ class Draggable {
   private element: HTMLElement;
 
   private currentDrag: undefined | {
-    initialMouseX: number,
-    initialMouseY: number,
-    initialElementX: number,
-    initialElementY: number,
     removeListeners: () => void,
-  };
+  } | any;
 
   constructor(selector: string) {
     const element = $(selector);
@@ -120,7 +116,10 @@ class Chessboard {
 
   private squares: Partial<Record<string, HTMLElement>>; // What type should I use?
 
-  private selectedSquare: Coordinates | undefined;
+  private currentDrag: undefined | {
+    movingElement: HTMLElement,
+    removeListeners: () => void,
+  };
 
   // private piecesLayer!: HTMLElement;
 
@@ -196,7 +195,10 @@ class Chessboard {
         const squareColor = (r + c) % 2 === 0 ? 'light' : 'dark';
         square.classList.add('square', squareColor);
         this.squares[`${r}-${c}`] = square;
-        square.addEventListener('click', () => this.handleClick([r, c]));
+
+        // square.addEventListener('click', () => this.handleClick([r, c]));
+        square.addEventListener('mousedown', (event) => this.onDragStart(event, [r, c]));
+
       }
     }
     // </div.main-layer>
@@ -206,21 +208,19 @@ class Chessboard {
     this.clearBoard();
     for (let piece of position) {
       const squareEl = this.getSquareElement(piece.coordinates);
-      const pieceEl = document.createElement('img');
-      squareEl.appendChild(pieceEl);
-      pieceEl.src = `./images/pieces/${piece.color}${piece.type}.svg`;
+      squareEl.appendChild(createPieceImg(piece));
     }
   }
 
-  private updateSelectedSquare(square: Coordinates | undefined): void {
-    if (this.selectedSquare) {
-      this.getSquareElement(this.selectedSquare).classList.remove('selected');
-    }
-    this.selectedSquare = square;
-    if (square) {
-      this.getSquareElement(square).classList.add('selected');
-    }
-  }
+  // private updateSelectedSquare(square: Coordinates | undefined): void {
+  //   if (this.selectedSquare) {
+  //     this.getSquareElement(this.selectedSquare).classList.remove('selected');
+  //   }
+  //   this.selectedSquare = square;
+  //   if (square) {
+  //     this.getSquareElement(square).classList.add('selected');
+  //   }
+  // }
 
   private clearBoard(): void {
     for (let square of Object.values(this.squares)) {
@@ -228,17 +228,100 @@ class Chessboard {
     }
   }
 
-  private handleClick(square: Coordinates): void {
-    if (!this.selectedSquare && this.getPiece(square)) {
-      // Initiate a move
-      this.updateSelectedSquare(square);
-    } else if (this.selectedSquare) {
-      // Make a move
-      const start = this.selectedSquare;
-      const end = square;
-      this.updateSelectedSquare(undefined);
-      this.move({ start, end });
+  // private handleClick(square: Coordinates): void {
+  //   if (!this.selectedSquare && this.getPiece(square)) {
+  //     // Initiate a move
+  //     this.updateSelectedSquare(square);
+  //   } else if (this.selectedSquare) {
+  //     // Make a move
+  //     const start = this.selectedSquare;
+  //     const end = square;
+  //     this.updateSelectedSquare(undefined);
+  //     this.move({ start, end });
+  //   }
+  // }
+
+  private onDragStart(event: MouseEvent, square: Coordinates): void {
+    const piece = this.getPiece(square);
+    if (!piece) {
+      return;
     }
+
+    // Update classes on existing elements
+    {
+      const squareElement = this.getSquareElement(square);
+      squareElement.classList.add('is-being-dragged');
+
+      this.root.classList.add('drag-mode');
+    }
+
+    // Add "moving piece" element
+    const movingElement = createPieceImg(piece);
+    document.body.appendChild(movingElement);
+    movingElement.style.position = 'absolute';
+    // movingElement.style.cursor = 'pointer';
+    movingElement.style.pointerEvents = 'none';
+    movingElement.style.width = '100px'; // TODO DRY
+    movingElement.style.left = `${event.clientX - 50}px`;
+    movingElement.style.top = `${event.clientY - 50}px`;
+
+    // Listeners
+    let removeListeners;
+    {
+      const mousemoveListener = event => this.onDrag(event);
+      window.addEventListener('mousemove', mousemoveListener);
+
+      const mouseupListener = () => this.onDragEnd(square);
+      window.addEventListener('mouseup', mouseupListener);
+
+      removeListeners = () => {
+        window.removeEventListener('mousemove', mousemoveListener);
+        window.removeEventListener('mouseup', mouseupListener);
+      };
+    }
+
+    this.currentDrag = {
+      movingElement,
+      removeListeners,
+    }
+  }
+
+  private onDrag(event: MouseEvent): void {
+    if (!this.currentDrag) {
+      return;
+    }
+
+    const { movingElement } = this.currentDrag;
+
+    movingElement.style.left = `${event.clientX - 50}px`;
+    movingElement.style.top = `${event.clientY - 50}px`;
+
+    // const x = this.currentDrag.initialElementX + event.clientX - this.currentDrag.initialMouseX;
+    // const y = this.currentDrag.initialElementY + event.clientY - this.currentDrag.initialMouseY;
+    //
+    // this.element.style.left = `${x}px`;
+    // this.element.style.top = `${y}px`;
+  }
+
+  private onDragEnd(square: Coordinates): void {
+    if (!this.currentDrag) {
+      return;
+    }
+
+    const squareEl = this.getSquareElement(square);
+    squareEl.classList.remove('is-being-dragged');
+
+    this.root.classList.remove('drag-mode');
+
+    this.currentDrag.movingElement.remove();
+
+    this.currentDrag.removeListeners();
+
+    // NEXT: Get square coordinates out of this element
+    // Will require adding data attributes to the squares
+    console.log($('.chessboard .square:hover'));
+
+    this.currentDrag = undefined;
   }
 
   private getSquareElement(coordinates: Coordinates): HTMLElement {
@@ -277,6 +360,14 @@ class Chessboard {
       (move.end[1] === 2 || move.end[1] === 6)
     );
   }
+}
+
+// I wonder if it's more or less maintainable to have this function also appendChild
+function createPieceImg(piece: PlacedPiece): HTMLImageElement {
+  const pieceEl = document.createElement('img');
+  pieceEl.src = `./images/pieces/${piece.color}${piece.type}.svg`;
+  pieceEl.draggable = false;
+  return pieceEl;
 }
 
 main();

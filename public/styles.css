@@ -29,6 +29,14 @@
   background: #eee;
 }
 
-.square.selected {
+.square.is-being-dragged {
   background: hsla(220, 80%, 70%);
+}
+
+.square.is-being-dragged img {
+  opacity: 0.25;
+}
+
+.chessboard.drag-mode .square:not(.is-being-dragged):hover {
+  background: hsla(220, 80%, 85%);
 }
