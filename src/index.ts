@@ -43,7 +43,7 @@ function main() {
   //   board.move(move);
   // }
 
-  new Draggable('#my-draggable');
+  // new Draggable('#my-draggable');
 }
 
 class Draggable {
@@ -131,8 +131,8 @@ class Chessboard {
     }
     this.root = root as HTMLElement;
     this.squares = {};
-    // this.renderBoard();
-    // this.renderPosition(startingPosition);
+    this.renderBoard();
+    this.renderPosition(startingPosition);
   }
 
   public move(move: Move): void {
