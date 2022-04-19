@@ -196,6 +196,9 @@ class Chessboard {
         square.classList.add('square', squareColor);
         this.squares[`${r}-${c}`] = square;
 
+        square.attributes['data-coordinates-r'] = r;
+        square.attributes['data-coordinates-c'] = c;
+
         // square.addEventListener('click', () => this.handleClick([r, c]));
         square.addEventListener('mousedown', (event) => this.onDragStart(event, [r, c]));
 
@@ -303,6 +306,7 @@ class Chessboard {
     // this.element.style.top = `${y}px`;
   }
 
+  // TODO Rename square? It is the square we started dragging on.
   private onDragEnd(square: Coordinates): void {
     if (!this.currentDrag) {
       return;
@@ -317,9 +321,12 @@ class Chessboard {
 
     this.currentDrag.removeListeners();
 
-    // NEXT: Get square coordinates out of this element
-    // Will require adding data attributes to the squares
-    console.log($('.chessboard .square:hover'));
+    const hoveredElement = $('.chessboard .square:hover');
+    if (hoveredElement) {
+      const r: number = +hoveredElement.attributes['data-coordinates-r'];
+      const c: number = +hoveredElement.attributes['data-coordinates-c'];
+      this.move({ start: square, end: [r, c] });
+    }
 
     this.currentDrag = undefined;
   }
