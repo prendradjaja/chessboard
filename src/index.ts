@@ -161,10 +161,10 @@ class Chessboard {
   }
 
   private handleClick(square: Coordinates): void {
-    if (!this.selectedSquare) {
+    if (!this.selectedSquare && this.getPiece(square)) {
       // Initiate a move
       this.updateSelectedSquare(square);
-    } else {
+    } else if (this.selectedSquare) {
       // Make a move
       const start = this.selectedSquare;
       const end = square;
