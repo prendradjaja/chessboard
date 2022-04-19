@@ -27,9 +27,12 @@ export type Move = { start: Coordinates, end: Coordinates };
 
 export type Position = PlacedPiece[]; // TODO name?
 
-interface PlacedPiece {
+interface Piece {
   type: 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
   color: 'w' | 'b';
+}
+
+interface PlacedPiece extends Piece {
   coordinates: Coordinates;
 }
 
@@ -73,15 +76,8 @@ class Chessboard {
 
     const isCastling = this.isCastling(move);
 
-    // TODO DRY this predicate -- also used in isCastling
-    const piece = popBy(
-      this.position,
-      (piece: PlacedPiece) => piece.coordinates[0] === move.start[0] && piece.coordinates[1] === move.start[1]
-    );
-    discardBy(
-      this.position,
-      (piece: PlacedPiece) => piece.coordinates[0] === move.end[0] && piece.coordinates[1] === move.end[1]
-    );
+    const piece = this.removePiece(move.start)!; // TODO This function assumes the move given is valid (hence the !). Should I do validation?
+    this.removePiece(move.end);
     this.position.push({
       ...piece,
       coordinates: move.end,
@@ -182,42 +178,37 @@ class Chessboard {
     return this.squares[`${r}-${c}`]!;
   }
 
+  private getPiece(square: Coordinates): PlacedPiece | undefined {
+    return this.position.find(
+      (piece: PlacedPiece) => piece.coordinates[0] === square[0] && piece.coordinates[1] === square[1]
+    );
+  }
+
+  /**
+   * Returns the removed piece, if any.
+   */
+  private removePiece(square: Coordinates): Piece | undefined {
+    const index = this.position.findIndex(
+      (piece: PlacedPiece) => piece.coordinates[0] === square[0] && piece.coordinates[1] === square[1]
+    );
+
+    if (index === -1) {
+      return undefined;
+    } else {
+      const [placedPiece] = this.position.splice(index, 1);
+      const { coordinates, ...piece } = placedPiece;
+      return piece;
+    }
+  }
+
   private isCastling(move: Move) {
-    const piece = this.position.find(
-      (piece: PlacedPiece) => piece.coordinates[0] === move.start[0] && piece.coordinates[1] === move.start[1]
-    )!;
+    const piece = this.getPiece(move.start);
     return (
-      piece.type === 'k' &&
+      piece?.type === 'k' &&
       move.start[1] === 4 &&
       (move.end[1] === 2 || move.end[1] === 6)
     );
   }
-}
-
-/**
- * Find the first element of `arr` that matches `predicate`. Remove and
- * return it.
- *
- * If none match, throw an Error.
- */
-function popBy<T>(arr: T[], predicate: (T) => boolean): T {
-  const index = arr.findIndex(predicate);
-  if (index === -1) {
-    throw new Error("Element not found");
-  }
-  const [item] = arr.splice(index, 1);
-  return item;
-}
-
-/**
- * Remove the first element of `arr` that matches `predicate` (if any exists).
- */
-function discardBy<T>(arr: T[], predicate: (T) => boolean): void {
-  const index = arr.findIndex(predicate);
-  if (index === -1) {
-    return;
-  }
-  arr.splice(index, 1);
 }
 
 main();
