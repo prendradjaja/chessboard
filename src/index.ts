@@ -182,6 +182,10 @@ class Chessboard {
   // }
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
+    if (event.button !== 0 /* Left mouse button */) {
+      return;
+    }
+
     const piece = this.getPiece(square);
     if (!piece) {
       return;
@@ -235,6 +239,8 @@ class Chessboard {
 
     movingElement.style.left = `${event.clientX - 50}px`;
     movingElement.style.top = `${event.clientY - 50}px`;
+
+    // TODO Prevent scrollbars appearing upon drag-off-screen
 
     // const x = this.currentDrag.initialElementX + event.clientX - this.currentDrag.initialMouseX;
     // const y = this.currentDrag.initialElementY + event.clientY - this.currentDrag.initialMouseY;
