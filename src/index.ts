@@ -75,10 +75,10 @@ class Chessboard {
   // Not compatible with chessboardjs
   public getAscii(): string {
     const grid: string[][] = [];
-    for (let r = 0; r < 8; r++) {
+    for (let r = 0; r < BOARD_SIZE; r++) {
       const row: string[] = [];
       grid.push(row);
-      for (let c = 0; c < 8; c++) {
+      for (let c = 0; c < BOARD_SIZE; c++) {
         row.push('.');
       }
     }
