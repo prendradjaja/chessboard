@@ -37,17 +37,15 @@ interface PlacedPiece extends Piece {
 }
 
 function main() {
-  const board = new Chessboard('#my-board');
+  runUnitTests();
 
-  // for (let move of operaGame) {
-  //   board.move(move);
-  // }
+  const board = new Chessboard('#my-board');
 }
 
 class Chessboard {
   private position: Position = JSON.parse(JSON.stringify(startingPosition));
 
-  private root: HTMLElement;
+  private root: HTMLElement | undefined;
   private mainLayer!: HTMLElement;
   private coordinatesLayer!: HTMLElement;
 
@@ -60,15 +58,38 @@ class Chessboard {
 
   // private piecesLayer!: HTMLElement;
 
-  constructor(selector: string) {
-    const root = $(selector);
-    if (!root) {
-      throw new Error('Root element not found');
-    }
-    this.root = root as HTMLElement;
+  // TODO Maybe instead of headless board, use jsdom?
+  constructor(selector?: string) {
+    if (selector) {
+      const root = $(selector);
+      if (!root) {
+        throw new Error('Root element not found');
+      }
+      this.root = root as HTMLElement;
+    };
     this.squares = {};
     this.renderBoard();
     this.renderPosition(startingPosition);
+  }
+
+  // Not compatible with chessboardjs
+  public getAscii(): string {
+    const grid: string[][] = [];
+    for (let r = 0; r < 8; r++) {
+      const row: string[] = [];
+      grid.push(row);
+      for (let c = 0; c < 8; c++) {
+        row.push('.');
+      }
+    }
+
+    for (let piece of this.position) {
+      const [r, c] = piece.coordinates;
+      let pieceSymbol = piece.color === 'b' ? piece.type : piece.type.toUpperCase();
+      grid[r][c] = pieceSymbol;
+    }
+
+    return grid.map(row => row.join(' ')).join('\n');
   }
 
   public move(move: Move): void {
@@ -108,6 +129,10 @@ class Chessboard {
   }
 
   private renderBoard(): void {
+    if (!this.root) {
+      return;
+    }
+
     this.root.classList.add('chessboard');
 
     // // <div class="pieces-layer">
@@ -145,7 +170,10 @@ class Chessboard {
   }
 
   private renderPosition(position: Position): void {
-    this.clearBoard();
+    if (!this.root) {
+      return;
+    }
+    this.clearBoard(); // TODO Don't do clear-redraw, at least because any bug in the middle of it can leave the board blank
     for (let piece of position) {
       const squareEl = this.getSquareElement(piece.coordinates);
       squareEl.appendChild(createPieceImg(piece));
@@ -182,6 +210,10 @@ class Chessboard {
   // }
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
+    if (!this.root) {
+      return;
+    }
+
     if (event.button !== 0 /* Left mouse button */) {
       return;
     }
@@ -251,6 +283,10 @@ class Chessboard {
 
   // TODO Rename square? It is the square we started dragging on.
   private onDragEnd(square: Coordinates): void {
+    if (!this.root) {
+      return;
+    }
+
     if (!this.currentDrag) {
       return;
     }
@@ -275,6 +311,9 @@ class Chessboard {
   }
 
   private getSquareElement(coordinates: Coordinates): HTMLElement {
+    if (!this.root) {
+      throw new Error('This Chessboard is headless!');
+    }
     const [r, c] = coordinates;
     return this.squares[`${r}-${c}`]!;
   }
@@ -318,6 +357,32 @@ function createPieceImg(piece: PlacedPiece): HTMLImageElement {
   pieceEl.src = `./images/pieces/${piece.color}${piece.type}.svg`;
   pieceEl.draggable = false;
   return pieceEl;
+}
+
+function runUnitTests() {
+  const board = new Chessboard();
+
+  for (let move of operaGame) {
+    board.move(move);
+  }
+
+  const expected = `
+. n . R k b . r
+p . . . . p p p
+. . . . q . . .
+. . . . p . B .
+. . . . P . . .
+. . . . . . . .
+P P P . . P P P
+. . K . . . . .
+  `.trim();
+
+  const pass = board.getAscii() === expected;
+  if (pass) {
+    console.log('Tests passed');
+  } else {
+    console.error('Tests failed');
+  }
 }
 
 main();
