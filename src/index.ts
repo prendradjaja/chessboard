@@ -10,14 +10,12 @@
 // drag handler
 
 import { operaGame } from "./opera-game";
-import { startingPosition } from "./starting-position";
+import { startingPosition, sovereignStartingPosition } from "./starting-position";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 // const $ = s => document.querySelector(s);
 // const $$ = s => document.querySelectorAll(s);
-
-const BOARD_SIZE = 8; // height & width in squares -- duplicated in styles.css
 
 // "row, col" coordinates, zero-indexed
 // TODO change coordinate system? it's maybe confusing that y-axis is flipped, etc
@@ -37,13 +35,24 @@ interface PlacedPiece extends Piece {
 }
 
 function main() {
-  runUnitTests();
+  // runUnitTests();
 
-  const board = new Chessboard('#my-board');
+  let isSovereignChess = false;
+  // isSovereignChess = true;
+
+  let board: Chessboard;
+  if (!isSovereignChess) {
+    board = new Chessboard(startingPosition, '#my-board');
+  } else {
+    board = new Chessboard(sovereignStartingPosition, '#my-board', 16);
+    $('#my-board')!.classList.add('sovereign');
+  }
 }
 
 class Chessboard {
-  private position: Position = JSON.parse(JSON.stringify(startingPosition));
+  private boardSize: number;
+
+  private position: Position;
 
   private root: HTMLElement | undefined;
   private mainLayer!: HTMLElement;
@@ -59,7 +68,7 @@ class Chessboard {
   // private piecesLayer!: HTMLElement;
 
   // TODO Maybe instead of headless board, use jsdom?
-  constructor(selector?: string) {
+  constructor(position: Position, selector?: string, boardSize = 8) {
     if (selector) {
       const root = $(selector);
       if (!root) {
@@ -67,24 +76,27 @@ class Chessboard {
       }
       this.root = root as HTMLElement;
     };
+    this.boardSize = boardSize;
     this.squares = {};
     this.renderBoard();
-    this.renderPosition(startingPosition);
+    this.position = JSON.parse(JSON.stringify(position))
+    this.renderPosition(this.position);
   }
 
   // Not compatible with chessboardjs
   public getAscii(): string {
     const grid: string[][] = [];
-    for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let r = 0; r < this.boardSize; r++) {
       const row: string[] = [];
       grid.push(row);
-      for (let c = 0; c < BOARD_SIZE; c++) {
+      for (let c = 0; c < this.boardSize; c++) {
         row.push('.');
       }
     }
 
     for (let piece of this.position) {
       const [r, c] = piece.coordinates;
+      console.log(JSON.stringify(piece));
       let pieceSymbol = piece.color === 'b' ? piece.type : piece.type.toUpperCase();
       grid[r][c] = pieceSymbol;
     }
@@ -148,11 +160,11 @@ class Chessboard {
     this.mainLayer = document.createElement('div');
     this.root.appendChild(this.mainLayer);
     this.mainLayer.classList.add('main-layer');
-    this.mainLayer.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, var(--cell-size))`;
+    this.mainLayer.style.gridTemplateColumns = `repeat(${this.boardSize}, var(--cell-size))`;
 
     //   <div class="square" />
-    for (let r = 0; r < BOARD_SIZE; r++) {
-      for (let c = 0; c < BOARD_SIZE; c++) {
+    for (let r = 0; r < this.boardSize; r++) {
+      for (let c = 0; c < this.boardSize; c++) {
         const square = document.createElement('div');
         this.mainLayer.appendChild(square);
         const squareColor = (r + c) % 2 === 0 ? 'light' : 'dark';
@@ -211,6 +223,7 @@ class Chessboard {
   // }
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
+    console.log(square[0] * 16 + square[1] + 1);
     if (!this.root) {
       return;
     }
@@ -361,7 +374,7 @@ function createPieceImg(piece: PlacedPiece): HTMLImageElement {
 }
 
 function runUnitTests() {
-  const board = new Chessboard();
+  const board = new Chessboard(startingPosition);
 
   for (let move of operaGame) {
     board.move(move);

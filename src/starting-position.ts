@@ -37,3 +37,41 @@ export const startingPosition: Position = [
   { type: 'n', color: 'w', coordinates: [7, 6] },
   { type: 'r', color: 'w', coordinates: [7, 7] },
 ];
+
+export const sovereignStartingPosition: Position = [
+  { type: 'r', color: 'b', coordinates: [0, 0+4] },
+  { type: 'n', color: 'b', coordinates: [0, 1+4] },
+  { type: 'b', color: 'b', coordinates: [0, 2+4] },
+  { type: 'q', color: 'b', coordinates: [0, 3+4] },
+  { type: 'k', color: 'b', coordinates: [0, 4+4] },
+  { type: 'b', color: 'b', coordinates: [0, 5+4] },
+  { type: 'n', color: 'b', coordinates: [0, 6+4] },
+  { type: 'r', color: 'b', coordinates: [0, 7+4] },
+
+  { type: 'p', color: 'b', coordinates: [1, 0+4] },
+  { type: 'p', color: 'b', coordinates: [1, 1+4] },
+  { type: 'p', color: 'b', coordinates: [1, 2+4] },
+  { type: 'p', color: 'b', coordinates: [1, 3+4] },
+  { type: 'p', color: 'b', coordinates: [1, 4+4] },
+  { type: 'p', color: 'b', coordinates: [1, 5+4] },
+  { type: 'p', color: 'b', coordinates: [1, 6+4] },
+  { type: 'p', color: 'b', coordinates: [1, 7+4] },
+
+  { type: 'p', color: 'w', coordinates: [6+8, 0+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 1+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 2+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 3+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 4+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 5+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 6+4] },
+  { type: 'p', color: 'w', coordinates: [6+8, 7+4] },
+
+  { type: 'r', color: 'w', coordinates: [7+8, 0+4] },
+  { type: 'n', color: 'w', coordinates: [7+8, 1+4] },
+  { type: 'b', color: 'w', coordinates: [7+8, 2+4] },
+  { type: 'q', color: 'w', coordinates: [7+8, 3+4] },
+  { type: 'k', color: 'w', coordinates: [7+8, 4+4] },
+  { type: 'b', color: 'w', coordinates: [7+8, 5+4] },
+  { type: 'n', color: 'w', coordinates: [7+8, 6+4] },
+  { type: 'r', color: 'w', coordinates: [7+8, 7+4] },
+];
