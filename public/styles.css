@@ -8,7 +8,7 @@
 
 .main-layer {
   display: grid;
-  grid-template-columns: repeat(8, var(--cell-size));
+  /* grid-template-columns: repeat(8, var(--cell-size)); */
 }
 
 .square {

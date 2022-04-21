@@ -148,6 +148,7 @@ class Chessboard {
     this.mainLayer = document.createElement('div');
     this.root.appendChild(this.mainLayer);
     this.mainLayer.classList.add('main-layer');
+    this.mainLayer.style.gridTemplateColumns = `repeat(${BOARD_SIZE}, var(--cell-size))`;
 
     //   <div class="square" />
     for (let r = 0; r < BOARD_SIZE; r++) {
