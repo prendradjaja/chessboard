@@ -38,7 +38,7 @@ function main() {
   // runUnitTests();
 
   let isSovereignChess = false;
-  // isSovereignChess = true;
+  isSovereignChess = true;
 
   let board: Chessboard;
   if (!isSovereignChess) {
