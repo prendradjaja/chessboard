@@ -27,7 +27,7 @@ export type Position = PlacedPiece[]; // TODO name?
 
 interface Piece {
   type: 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
-  color: 'w' | 'b';
+  color: 'w' | 'b' | 'a' | 's' | 'p' | 'r' | 'o' | 'y' | 'g' | 'c' | 'n' | 'v';
 }
 
 interface PlacedPiece extends Piece {

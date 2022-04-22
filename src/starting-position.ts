@@ -39,6 +39,7 @@ export const startingPosition: Position = [
 ];
 
 export const sovereignStartingPosition: Position = [
+  // Black
   { type: 'r', color: 'b', coordinates: [0, 0+4] },
   { type: 'n', color: 'b', coordinates: [0, 1+4] },
   { type: 'b', color: 'b', coordinates: [0, 2+4] },
@@ -47,7 +48,6 @@ export const sovereignStartingPosition: Position = [
   { type: 'b', color: 'b', coordinates: [0, 5+4] },
   { type: 'n', color: 'b', coordinates: [0, 6+4] },
   { type: 'r', color: 'b', coordinates: [0, 7+4] },
-
   { type: 'p', color: 'b', coordinates: [1, 0+4] },
   { type: 'p', color: 'b', coordinates: [1, 1+4] },
   { type: 'p', color: 'b', coordinates: [1, 2+4] },
@@ -57,6 +57,7 @@ export const sovereignStartingPosition: Position = [
   { type: 'p', color: 'b', coordinates: [1, 6+4] },
   { type: 'p', color: 'b', coordinates: [1, 7+4] },
 
+  // White
   { type: 'p', color: 'w', coordinates: [6+8, 0+4] },
   { type: 'p', color: 'w', coordinates: [6+8, 1+4] },
   { type: 'p', color: 'w', coordinates: [6+8, 2+4] },
@@ -65,7 +66,6 @@ export const sovereignStartingPosition: Position = [
   { type: 'p', color: 'w', coordinates: [6+8, 5+4] },
   { type: 'p', color: 'w', coordinates: [6+8, 6+4] },
   { type: 'p', color: 'w', coordinates: [6+8, 7+4] },
-
   { type: 'r', color: 'w', coordinates: [7+8, 0+4] },
   { type: 'n', color: 'w', coordinates: [7+8, 1+4] },
   { type: 'b', color: 'w', coordinates: [7+8, 2+4] },
@@ -74,4 +74,104 @@ export const sovereignStartingPosition: Position = [
   { type: 'b', color: 'w', coordinates: [7+8, 5+4] },
   { type: 'n', color: 'w', coordinates: [7+8, 6+4] },
   { type: 'r', color: 'w', coordinates: [7+8, 7+4] },
+
+  // Ash
+  { type: 'q', color: 'a', coordinates: [0, 0] },
+  { type: 'b', color: 'a', coordinates: [0, 1] },
+  { type: 'r', color: 'a', coordinates: [1, 0] },
+  { type: 'n', color: 'a', coordinates: [1, 1] },
+  { type: 'n', color: 'a', coordinates: [14, 14] },
+  { type: 'r', color: 'a', coordinates: [14, 15] },
+  { type: 'b', color: 'a', coordinates: [15, 14] },
+  { type: 'q', color: 'a', coordinates: [15, 15] },
+
+  // Slate
+  { type: 'q', color: 's', coordinates: [0, 15] },
+  { type: 'b', color: 's', coordinates: [0, 14] },
+  { type: 'r', color: 's', coordinates: [1, 15] },
+  { type: 'n', color: 's', coordinates: [1, 14] },
+  { type: 'n', color: 's', coordinates: [14, 1] },
+  { type: 'r', color: 's', coordinates: [14, 0] },
+  { type: 'b', color: 's', coordinates: [15, 1] },
+  { type: 'q', color: 's', coordinates: [15, 0] },
+
+  // Violet
+  { type: 'r', color: 'v', coordinates: [0, 2] },
+  { type: 'n', color: 'v', coordinates: [0, 3] },
+  { type: 'q', color: 'v', coordinates: [8, 15] },
+  { type: 'b', color: 'v', coordinates: [9, 15] },
+  { type: 'p', color: 'v', coordinates: [1, 2] },
+  { type: 'p', color: 'v', coordinates: [1, 3] },
+  { type: 'p', color: 'v', coordinates: [8, 14] },
+  { type: 'p', color: 'v', coordinates: [9, 14] },
+
+  // Yellow
+  { type: 'r', color: 'y', coordinates: [0, 13] },
+  { type: 'n', color: 'y', coordinates: [0, 12] },
+  { type: 'q', color: 'y', coordinates: [8, 0] },
+  { type: 'b', color: 'y', coordinates: [9, 0] },
+  { type: 'p', color: 'y', coordinates: [1, 13] },
+  { type: 'p', color: 'y', coordinates: [1, 12] },
+  { type: 'p', color: 'y', coordinates: [8, 1] },
+  { type: 'p', color: 'y', coordinates: [9, 1] },
+
+  // Navy
+  { type: 'b', color: 'n', coordinates: [2, 0] },
+  { type: 'q', color: 'n', coordinates: [3, 0] },
+  { type: 'r', color: 'n', coordinates: [11, 15] },
+  { type: 'n', color: 'n', coordinates: [10, 15] },
+  { type: 'p', color: 'n', coordinates: [2, 1] },
+  { type: 'p', color: 'n', coordinates: [3, 1] },
+  { type: 'p', color: 'n', coordinates: [10, 14] },
+  { type: 'p', color: 'n', coordinates: [11, 14] },
+
+  // Orange
+  { type: 'b', color: 'o', coordinates: [2, 15] },
+  { type: 'q', color: 'o', coordinates: [3, 15] },
+  { type: 'r', color: 'o', coordinates: [11, 0] },
+  { type: 'n', color: 'o', coordinates: [10, 0] },
+  { type: 'p', color: 'o', coordinates: [2, 14] },
+  { type: 'p', color: 'o', coordinates: [3, 14] },
+  { type: 'p', color: 'o', coordinates: [10, 1] },
+  { type: 'p', color: 'o', coordinates: [11, 1] },
+
+  // Cyan
+  { type: 'r', color: 'c', coordinates: [4, 0] },
+  { type: 'n', color: 'c', coordinates: [5, 0] },
+  { type: 'q', color: 'c', coordinates: [12, 15] },
+  { type: 'b', color: 'c', coordinates: [13, 15] },
+  { type: 'p', color: 'c', coordinates: [4, 1] },
+  { type: 'p', color: 'c', coordinates: [5, 1] },
+  { type: 'p', color: 'c', coordinates: [12, 14] },
+  { type: 'p', color: 'c', coordinates: [13, 14] },
+
+  // Green
+  { type: 'b', color: 'g', coordinates: [6, 0] },
+  { type: 'q', color: 'g', coordinates: [7, 0] },
+  { type: 'n', color: 'g', coordinates: [15, 12] },
+  { type: 'r', color: 'g', coordinates: [15, 13] },
+  { type: 'p', color: 'g', coordinates: [6, 1] },
+  { type: 'p', color: 'g', coordinates: [7, 1] },
+  { type: 'p', color: 'g', coordinates: [14, 12] },
+  { type: 'p', color: 'g', coordinates: [14, 13] },
+
+  // Pink
+  { type: 'b', color: 'p', coordinates: [6, 15] },
+  { type: 'q', color: 'p', coordinates: [7, 15] },
+  { type: 'r', color: 'p', coordinates: [15, 2] },
+  { type: 'n', color: 'p', coordinates: [15, 3] },
+  { type: 'p', color: 'p', coordinates: [6, 14] },
+  { type: 'p', color: 'p', coordinates: [7, 14] },
+  { type: 'p', color: 'p', coordinates: [14, 2] },
+  { type: 'p', color: 'p', coordinates: [14, 3] },
+
+  // Red
+  { type: 'r', color: 'r', coordinates: [4, 15] },
+  { type: 'n', color: 'r', coordinates: [5, 15] },
+  { type: 'q', color: 'r', coordinates: [12, 0] },
+  { type: 'b', color: 'r', coordinates: [13, 0] },
+  { type: 'p', color: 'r', coordinates: [4, 14] },
+  { type: 'p', color: 'r', coordinates: [5, 14] },
+  { type: 'p', color: 'r', coordinates: [12, 1] },
+  { type: 'p', color: 'r', coordinates: [13, 1] },
 ];
