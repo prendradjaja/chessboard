@@ -60,15 +60,30 @@
   box-sizing: border-box;
 }
 /* Horizontal line. Is off-center -- increase width to see */
-.sovereign .square:nth-child(n+113):nth-child(-n+128) {
-  border-bottom: 3px solid black;
+/* .sovereign .square:nth-child(n+113):nth-child(-n+128) { */
+.sovereign .square:nth-child(n+113):nth-child(-n+118),
+.sovereign .square:nth-child(n+123):nth-child(-n+128) {
+  border-bottom: 3px solid brown;
 }
 /* Vertical line. Is off-center -- increase width to see */
-.sovereign .square:nth-child(16n+8) {
-  border-right: 3px solid black;
+.sovereign .square:nth-child(16n+8):nth-child(-n+96),
+.sovereign .square:nth-child(16n+8):nth-child(n+160) {
+  border-right: 3px solid brown;
 }
 
 /* Center TODO */
+.sovereign .square:nth-child(n+103):nth-child(-n+106) {
+  border-top: 3px solid black;
+}
+.sovereign .square:nth-child(n+151):nth-child(-n+154) {
+  border-bottom: 3px solid black;
+}
+.sovereign .square:nth-child(16n+106):nth-child(-n+154) {
+  border-right: 3px solid black;
+}
+.sovereign .square:nth-child(16n+103):nth-child(-n+154) {
+  border-left: 3px solid black;
+}
 
 /* Colored squares */
 .sovereign .square:nth-child(69), .sovereign .square:nth-child(188) {
@@ -90,7 +105,7 @@
   background: hsl(270, 100%, 70%); /* purple */
 }
 .sovereign .square:nth-child(118), .sovereign .square:nth-child(139) {
-  background: orange;
+  background: hsl(37, 100%, 48%); /* orange */
 }
 .sovereign .square:nth-child(123), .sovereign .square:nth-child(134) {
   background: skyblue;
