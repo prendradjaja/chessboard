@@ -37,16 +37,8 @@ interface PlacedPiece extends Piece {
 function main() {
   // runUnitTests();
 
-  let isSovereignChess = false;
-  // isSovereignChess = true;
-
   let board: Chessboard;
-  if (!isSovereignChess) {
-    board = new Chessboard(startingPosition, '#my-board');
-  } else {
-    board = new Chessboard(sovereignStartingPosition, '#my-board', 16);
-    $('#my-board')!.classList.add('sovereign');
-  }
+  board = new Chessboard(startingPosition, '#my-board');
 }
 
 class Chessboard {
