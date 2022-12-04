@@ -11,6 +11,7 @@
 
 import { operaGame } from "./opera-game";
 import { startingPosition, sovereignStartingPosition } from "./starting-position";
+import { makeStartingPosition } from "./queens-quadrille";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
@@ -19,13 +20,13 @@ const $$ = document.querySelectorAll.bind(document);
 
 // "row, col" coordinates, zero-indexed
 // TODO change coordinate system? it's maybe confusing that y-axis is flipped, etc
-type Coordinates = [number, number];
+export type Coordinates = [number, number];
 
 export type Move = { start: Coordinates, end: Coordinates };
 
 export type Position = PlacedPiece[]; // TODO name?
 
-interface Piece {
+export interface Piece {
   type: 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
   color: 'w' | 'b' | 'a' | 's' | 'p' | 'r' | 'o' | 'y' | 'g' | 'c' | 'n' | 'v';
 }
@@ -38,7 +39,7 @@ function main() {
   // runUnitTests();
 
   let board: Chessboard;
-  board = new Chessboard(startingPosition, '#my-board');
+  board = new Chessboard(makeStartingPosition(), '#my-board', 4);
 }
 
 class Chessboard {
