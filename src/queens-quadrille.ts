@@ -1,4 +1,4 @@
-import type { Position, Piece, Coordinates } from './index'
+import type { Position, Piece, Coordinates, Move, Chessboard } from './index'
 
 export function makeStartingPosition(): Position {
   const pieces: Piece[] = [
@@ -29,6 +29,31 @@ export function makeStartingPosition(): Position {
     coordinates,
     ...pieces[i],
   }));
+}
+
+export function validateMove(move: Move, board: Chessboard): boolean {
+  const { start, end } = move;
+  if (board.getPiece(end)) {
+    return false;
+  }
+
+  const { type: pieceType } = board.getPiece(start)!;
+
+  const allowedMoves: Record<string, string[]> = {};
+  allowedMoves.r = [[0, 1], [1, 0], [0, -1], [-1, 0]].map(x => x.toString());
+  allowedMoves.b = [[1, 1], [1, -1], [-1, -1], [-1, 1]].map(x => x.toString());
+  allowedMoves.n = [[1, 2], [-1, 2], [-1, -2], [1, -2], [2, 1], [-2, 1], [-2, -1], [2, -1]].map(x => x.toString());
+  allowedMoves.k = [...allowedMoves.r, ...allowedMoves.b];
+  allowedMoves.q = [...allowedMoves.k];
+
+  const delta = [
+    end[0] - start[0],
+    end[1] - start[1],
+  ].toString();
+
+  return allowedMoves[pieceType].includes(delta);
+
+  return true;
 }
 
 // https://stackoverflow.com/a/12646864

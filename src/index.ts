@@ -11,7 +11,7 @@
 
 import { operaGame } from "./opera-game";
 import { startingPosition, sovereignStartingPosition } from "./starting-position";
-import { makeStartingPosition } from "./queens-quadrille";
+import { makeStartingPosition, validateMove } from "./queens-quadrille";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
@@ -42,7 +42,7 @@ function main() {
   board = new Chessboard(makeStartingPosition(), '#my-board', 4);
 }
 
-class Chessboard {
+export class Chessboard {
   private boardSize: number;
 
   private position: Position;
@@ -217,7 +217,6 @@ class Chessboard {
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
     event.preventDefault();
-    console.log(square[0] * 16 + square[1] + 1);
     if (!this.root) {
       return;
     }
@@ -312,7 +311,10 @@ class Chessboard {
     if (hoveredElement) {
       const r: number = +hoveredElement.attributes['data-coordinates-r'];
       const c: number = +hoveredElement.attributes['data-coordinates-c'];
-      this.move({ start: square, end: [r, c] });
+      const move = { start: square, end: [r, c] as Coordinates };
+      if (validateMove(move, this)) {
+        this.move(move);
+      }
     }
 
     this.currentDrag = undefined;
@@ -326,7 +328,7 @@ class Chessboard {
     return this.squares[`${r}-${c}`]!;
   }
 
-  private getPiece(square: Coordinates): PlacedPiece | undefined {
+  public getPiece(square: Coordinates): PlacedPiece | undefined {
     return this.position.find(
       (piece: PlacedPiece) => piece.coordinates[0] === square[0] && piece.coordinates[1] === square[1]
     );
