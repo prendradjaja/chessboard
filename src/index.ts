@@ -223,6 +223,7 @@ class Chessboard {
   // }
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
+    event.preventDefault();
     console.log(square[0] * 16 + square[1] + 1);
     if (!this.root) {
       return;
