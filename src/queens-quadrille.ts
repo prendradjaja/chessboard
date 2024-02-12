@@ -9,7 +9,6 @@ export function makeStartingPosition(): Position {
     { type: 'b', color: 'b' },
     { type: 'b', color: 'b' },
     { type: 'k', color: 'b' },
-    // { type: 'q', color: 'b' },
     { type: 'r', color: 'w' },
     { type: 'r', color: 'w' },
     { type: 'n', color: 'w' },
@@ -17,18 +16,54 @@ export function makeStartingPosition(): Position {
     { type: 'b', color: 'w' },
     { type: 'b', color: 'w' },
     { type: 'k', color: 'w' },
-    { type: 'q', color: 'w' },
   ];
-  const squares: Coordinates[] = [0, 1, 2, 3]
-    .flatMap(z =>
-      [0, 1, 2, 3].map(w => [z, w] as Coordinates)
-    );
-  shuffleArray(squares);
-  squares.pop();
-  return squares.map((coordinates, i) => ({
-    coordinates,
-    ...pieces[i],
-  }));
+  const allSquares: Coordinates[] = [
+    [0, 0], [0, 1], [0, 2], [0, 3],
+    [1, 0], [1, 1], [1, 2], [1, 3],
+    [2, 0], [2, 1], [2, 2], [2, 3],
+    [3, 0], [3, 1], [3, 2], [3, 3],
+  ];
+  const possibleQueenSquares = [
+            [0, 1], [0, 2],
+    [1, 0], [1, 1], [1, 2], [1, 3],
+    [2, 0], [2, 1], [2, 2], [2, 3],
+            [3, 1], [3, 2],
+  ];
+  const queenSquare = randomChoice(possibleQueenSquares);
+  const result: Position = [
+    {
+      coordinates: queenSquare,
+      type: 'q' as const,
+      color: 'w' as const,
+    },
+  ];
+
+  const remainingSquares = allSquares.filter(square => !shallowEquals(square, queenSquare));
+  shuffleArray(remainingSquares);
+  while (pieces.length) {
+    const piece = pieces.pop()!;
+    const coordinates = remainingSquares.pop();
+    if (!coordinates) {
+      throw new Error('coordinates is unexpectedly empty');
+    }
+    result.push({
+      coordinates,
+      ...piece,
+    });
+  }
+  return result;
+}
+
+function shallowEquals(arr1, arr2): boolean {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export function validateMove(move: Move, board: Chessboard): boolean {
@@ -62,4 +97,8 @@ function shuffleArray(array) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
+}
+
+function randomChoice(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }

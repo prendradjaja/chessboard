@@ -35,11 +35,38 @@ interface PlacedPiece extends Piece {
   coordinates: Coordinates;
 }
 
+// TODO DRY
+function shallowEquals(arr1, arr2): boolean {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function main() {
   // runUnitTests();
 
   let board: Chessboard;
   board = new Chessboard(makeStartingPosition(), '#my-board', 4);
+
+  const goalSquares: Coordinates[] = [[0, 0], [0, 3], [3, 0], [3, 3]];
+  for (let each of goalSquares) {
+    board.getSquareElement(each).classList.add('unreached-goal');
+  }
+
+  board.setMoveListener(move => {
+    if (
+      board.getPiece(move.end)?.type === 'q'
+      && goalSquares.some(square => shallowEquals(square, move.end))
+    ) {
+      board.getSquareElement(move.end).classList.add('reached-goal');
+    }
+  });
 }
 
 export class Chessboard {
@@ -58,6 +85,8 @@ export class Chessboard {
     removeListeners: () => void,
   };
 
+  private onPieceMove?: (move: Move) => void; // TODO type
+
   // private piecesLayer!: HTMLElement;
 
   // TODO Maybe instead of headless board, use jsdom?
@@ -74,6 +103,10 @@ export class Chessboard {
     this.renderBoard();
     this.position = JSON.parse(JSON.stringify(position))
     this.renderPosition(this.position);
+  }
+
+  public setMoveListener(onPieceMove: (move: Move) => void): void {
+    this.onPieceMove = onPieceMove;
   }
 
   // Not compatible with chessboardjs
@@ -169,7 +202,6 @@ export class Chessboard {
 
         // square.addEventListener('click', () => this.handleClick([r, c]));
         square.addEventListener('mousedown', (event) => this.onDragStart(event, [r, c]));
-
       }
     }
     // </div.main-layer>
@@ -314,13 +346,14 @@ export class Chessboard {
       const move = { start: square, end: [r, c] as Coordinates };
       if (validateMove(move, this)) {
         this.move(move);
+        this.onPieceMove && this.onPieceMove(move);
       }
     }
 
     this.currentDrag = undefined;
   }
 
-  private getSquareElement(coordinates: Coordinates): HTMLElement {
+  public getSquareElement(coordinates: Coordinates): HTMLElement {
     if (!this.root) {
       throw new Error('This Chessboard is headless!');
     }

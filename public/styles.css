@@ -41,6 +41,18 @@
   background: hsla(220, 80%, 85%);
 }
 
+.square.unreached-goal:not(.is-being-dragged) {
+  background: hsla(50, 70%, 70%);
+}
+
+.square.reached-goal:not(.is-being-dragged) {
+  background: hsla(95, 49%, 63%);
+}
+
+
+
+
+
 
 
 
