@@ -1,4 +1,4 @@
-import type { Position, Piece, Coordinates, Move, Chessboard } from './index'
+import type { Position, Piece, Coordinates, Move, Chessboard } from './chessboard'
 
 export function makeStartingPosition(): Position {
   const pieces: Piece[] = [
