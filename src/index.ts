@@ -28,6 +28,9 @@ function main() {
     board.getSquareElement(each).classList.add('unreached-goal');
   }
 
+  let goalsReached = new Set();
+  let alreadyAnnouncedWin = false;
+
   board.setMoveValidator(validateMove);
 
   board.setMoveListener(move => {
@@ -36,6 +39,11 @@ function main() {
       && goalSquares.some(square => shallowEquals(square, move.end))
     ) {
       board.getSquareElement(move.end).classList.add('reached-goal');
+      goalsReached.add(JSON.stringify(move.end));
+      if (goalsReached.size === goalSquares.length && !alreadyAnnouncedWin) {
+        alreadyAnnouncedWin = true;
+        console.log('win');
+      }
     }
   });
 }
