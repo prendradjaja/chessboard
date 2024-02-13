@@ -12,8 +12,7 @@
 import { makeStartingPosition, validateMove } from "./queens-quadrille";
 import { Chessboard, Coordinates, shallowEquals, PlacedPiece } from "./chessboard";
 
-// const $ = s => document.querySelector(s);
-// const $$ = s => document.querySelectorAll(s);
+const $ = document.querySelector.bind(document);
 
 // "row, col" coordinates, zero-indexed
 // TODO change coordinate system? it's maybe confusing that y-axis is flipped, etc
@@ -42,7 +41,7 @@ function main() {
       goalsReached.add(JSON.stringify(move.end));
       if (goalsReached.size === goalSquares.length && !alreadyAnnouncedWin) {
         alreadyAnnouncedWin = true;
-        console.log('win');
+          $('.congratulations')?.classList.remove('hidden');
       }
     }
   });

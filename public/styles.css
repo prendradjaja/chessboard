@@ -2,8 +2,33 @@
   --cell-size: 100px;
 }
 
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 3em;
+}
+
+.congratulations {
+  text-align: center;
+  color: hsla(95, 49%, 43%);
+  margin-top: 2em;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
 .chessboard {
   user-select: none;
+  margin: 0 auto;
+  width: calc(var(--cell-size) * 4);
 }
 
 .main-layer {
