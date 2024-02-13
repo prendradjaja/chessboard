@@ -1,8 +1,10 @@
+import { $ } from "./util";
+
 export type Coordinates = [number, number];
 
 export type Move = { start: Coordinates, end: Coordinates };
 
-export type Position = PlacedPiece[]; // TODO name?
+export type Position = PlacedPiece[];
 
 export interface Piece {
   type: 'k' | 'q' | 'r' | 'b' | 'n' | 'p';
@@ -11,23 +13,6 @@ export interface Piece {
 
 export interface PlacedPiece extends Piece {
   coordinates: Coordinates;
-}
-
-
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
-
-// TODO DRY
-export function shallowEquals(arr1, arr2): boolean {
-  if (arr1.length !== arr2.length) {
-    return false;
-  }
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false;
-    }
-  }
-  return true;
 }
 
 export class Chessboard {
@@ -39,7 +24,7 @@ export class Chessboard {
   private mainLayer!: HTMLElement;
   private coordinatesLayer!: HTMLElement;
 
-  private squares: Partial<Record<string, HTMLElement>>; // What type should I use?
+  private squares: Partial<Record<string, HTMLElement>>;
 
   private currentDrag: undefined | {
     movingElement: HTMLElement,
@@ -49,17 +34,12 @@ export class Chessboard {
   private onPieceMove?: (move: Move) => void;
   private moveValidator?: (move: Move, board: Chessboard) => boolean;
 
-  // private piecesLayer!: HTMLElement;
-
-  // TODO Maybe instead of headless board, use jsdom?
-  constructor(position: Position, selector?: string, boardSize = 8) {
-    if (selector) {
-      const root = $(selector);
-      if (!root) {
-        throw new Error('Root element not found');
-      }
-      this.root = root as HTMLElement;
-    };
+  constructor(position: Position, selector: string, boardSize = 8) {
+    const root = $(selector);
+    if (!root) {
+      throw new Error('Root element not found');
+    }
+    this.root = root as HTMLElement;
     this.boardSize = boardSize;
     this.squares = {};
     this.renderBoard();
@@ -97,13 +77,9 @@ export class Chessboard {
   }
 
   public move(move: Move): void {
-    // TODO e.p. and promotion are unimplemented, but require a bit
-    // more work/reworking than castling... do I need to do all this to make
-    // Sovereign Chess, anyway?
-
     const isCastling = this.isCastling(move);
 
-    const piece = this.removePiece(move.start)!; // TODO This function assumes the move given is valid (hence the !). Should I do validation?
+    const piece = this.removePiece(move.start)!;
     this.removePiece(move.end);
     this.position.push({
       ...piece,
@@ -121,7 +97,6 @@ export class Chessboard {
         startCol = 7;
         endCol = 5;
       } else {
-        // TODO ts-essentials UnreachableCaseError
         console.error('Unreachable case');
         return;
       }
@@ -138,10 +113,6 @@ export class Chessboard {
     }
 
     this.root.classList.add('chessboard');
-
-    // // <div class="pieces-layer">
-    // this.piecesLayer = document.createElement('div');
-    // this.root.appendChild(this.piecesLayer);
 
     // <div class="coordinates-layer" />
     this.coordinatesLayer = document.createElement('div');
@@ -166,7 +137,6 @@ export class Chessboard {
         square.attributes['data-coordinates-r'] = r;
         square.attributes['data-coordinates-c'] = c;
 
-        // square.addEventListener('click', () => this.handleClick([r, c]));
         square.addEventListener('mousedown', (event) => this.onDragStart(event, [r, c]));
       }
     }
@@ -184,34 +154,11 @@ export class Chessboard {
     }
   }
 
-  // private updateSelectedSquare(square: Coordinates | undefined): void {
-  //   if (this.selectedSquare) {
-  //     this.getSquareElement(this.selectedSquare).classList.remove('selected');
-  //   }
-  //   this.selectedSquare = square;
-  //   if (square) {
-  //     this.getSquareElement(square).classList.add('selected');
-  //   }
-  // }
-
   private clearBoard(): void {
     for (let square of Object.values(this.squares)) {
-      square!.innerHTML = ''; // Why do I need to tell TS that square is not undefined?
+      square!.innerHTML = '';
     }
   }
-
-  // private handleClick(square: Coordinates): void {
-  //   if (!this.selectedSquare && this.getPiece(square)) {
-  //     // Initiate a move
-  //     this.updateSelectedSquare(square);
-  //   } else if (this.selectedSquare) {
-  //     // Make a move
-  //     const start = this.selectedSquare;
-  //     const end = square;
-  //     this.updateSelectedSquare(undefined);
-  //     this.move({ start, end });
-  //   }
-  // }
 
   private onDragStart(event: MouseEvent, square: Coordinates): void {
     event.preventDefault();
@@ -242,7 +189,7 @@ export class Chessboard {
     movingElement.style.position = 'absolute';
     // movingElement.style.cursor = 'pointer';
     movingElement.style.pointerEvents = 'none';
-    movingElement.style.width = '100px'; // TODO DRY
+    movingElement.style.width = '100px';
     movingElement.style.left = `${event.clientX - 50}px`;
     movingElement.style.top = `${event.clientY - 50}px`;
 
@@ -276,17 +223,8 @@ export class Chessboard {
 
     movingElement.style.left = `${event.clientX - 50}px`;
     movingElement.style.top = `${event.clientY - 50}px`;
-
-    // TODO Prevent scrollbars appearing upon drag-off-screen
-
-    // const x = this.currentDrag.initialElementX + event.clientX - this.currentDrag.initialMouseX;
-    // const y = this.currentDrag.initialElementY + event.clientY - this.currentDrag.initialMouseY;
-    //
-    // this.element.style.left = `${x}px`;
-    // this.element.style.top = `${y}px`;
   }
 
-  // TODO Rename square? It is the square we started dragging on.
   private onDragEnd(square: Coordinates): void {
     if (!this.root) {
       return;
@@ -368,11 +306,9 @@ export class Chessboard {
   }
 }
 
-// I wonder if it's more or less maintainable to have this function also appendChild
 function createPieceImg(piece: PlacedPiece): HTMLImageElement {
   const pieceEl = document.createElement('img');
   pieceEl.src = `./images/pieces/${piece.color}${piece.type}.svg`;
   pieceEl.draggable = false;
   return pieceEl;
 }
-
